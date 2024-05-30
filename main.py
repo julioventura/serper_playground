@@ -7,7 +7,6 @@ import streamlit as st
 
 # Crie sua API na SERPER gratuita e rapidamente: https://serper.dev/api-key
 # SERPER_API_KEY = "cole sua chave aqui"
-SERPER_API_KEY = "4439b890022e1f9fe17872ff6f4dfc0470ec83bee"
 
 # Verifica se a chave da API foi definida.
 if not SERPER_API_KEY or SERPER_API_KEY == "cole sua chave aqui":
