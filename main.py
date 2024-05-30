@@ -5,16 +5,39 @@ import requests
 import json
 import streamlit as st
 
+
+# Definir a variável path_result no início do script (apenas o caminho)
+path_results = "./results/"
+
 # Crie sua API na SERPER gratuita e rapidamente: https://serper.dev/api-key
-# SERPER_API_KEY = "cole sua chave aqui"
+SERPER_API_KEY = "cole sua chave aqui"
 
-api_key = st.text_input("SERPER_API_KEY")
-SERPER_API_KEY = api_key
-
-# Verifica se a chave da API foi definida.
 if not SERPER_API_KEY or SERPER_API_KEY == "cole sua chave aqui":
-    st.error("\nERRO: \nVocê precisa fornecer uma chave de API do Serper. \nCrie uma gratuitamente em https://serper.dev/api-key\n\n")
-    st.stop()  # Encerra o programa se não houver chave.
+    serper_api_key = SERPER_API_KEY
+
+    if 'serper_api_key' not in st.session_state:
+        st.session_state['serper_api_key'] = ''
+
+    # Placeholder para o campo de input
+    input_placeholder = st.empty()
+
+    # Mostrar o campo de input se a chave não foi preenchida
+    if st.session_state['serper_api_key'] == '':
+        with input_placeholder.container():
+            serper_api_key = st.text_input("Sua CHAVE API SERPER (https://serper.dev/api-key)", key="serper_api_key_1")
+            # if st.button('Confirmar'):
+            if serper_api_key:
+                st.session_state['serper_api_key'] = serper_api_key
+                input_placeholder.empty()
+
+    # Utilizando as chaves API inseridas
+    if st.session_state['serper_api_key']:
+        SERPER_API_KEY = st.session_state['serper_api_key']
+    
+    # Verificação final de se a chave da API foi definida.
+    if not SERPER_API_KEY or SERPER_API_KEY == "cole sua chave aqui":
+        st.error("\nERRO: \nVocê precisa fornecer uma chave de API do Serper. \nCrie uma gratuitamente em https://serper.dev/api-key\n\n")
+        st.stop()  # Encerra o programa se não houver chave.
 
 
 # Busca de conteúdo na web
@@ -71,9 +94,15 @@ def search_content(query, search_type="search", period_choice="y"):
 
         search_results = response.json()
 
-        # Salvando os resultados em um arquivo JSON para análise
-        with open("search_results.json", "w", encoding="utf-8") as f:
+        
+        # Salvando os resultados em um arquivo JSON para análise em path_results
+        # Nome do arquivo
+        file_name = "search_results.json"
+        full_path = path_results + file_name
+
+        with open(full_path, "w", encoding="utf-8") as f:
             json.dump(search_results, f, ensure_ascii=False, indent=4)
+            st.write(f"Resultados salvos em: {full_path}")
 
         # Verificando se a chave 'organic' existe nos resultados
         if 'organic' not in search_results:
@@ -188,26 +217,6 @@ def search_content(query, search_type="search", period_choice="y"):
                 if cited_by:
                     st.write(f"Citado por: {cited_by}")
 
-            articles.append({
-                "title": title,
-                "url": url,
-                "snippet": snippet if search_type in ["search", "news", "shopping", "scholar"] else None,
-                "thumbnail": thumbnail if search_type in ["search", "images", "videos", "shopping"] else None,
-                "richSnippet": richSnippet if search_type == "search" else None,
-                "position": position if search_type == "search" else None,
-                "source": source if search_type in ["search", "images", "videos", "news", "shopping"] else None,
-                "channel": channel if search_type == "videos" else None,
-                "duration": duration if search_type == "videos" else None,
-                "views": views if search_type == "videos" else None,
-                "publication_info": publication_info if search_type == "scholar" else None,
-                "cited_by": cited_by if search_type == "scholar" else None,
-                "price": price if search_type == "shopping" else None,
-                "rating": rating if search_type == "shopping" else None,
-                "reviews": reviews if search_type == "shopping" else None,
-                "date": date if search_type == "news" else None,
-            })
-        return articles
-
     except requests.exceptions.HTTPError as errh:
         st.error(f"Erro HTTP: {errh}")
         if errh.response.status_code == 404:
@@ -269,47 +278,15 @@ def main():
     query = st.text_input("")
     
     if st.button("Buscar"):
-
-        print("\nsearch_type = ")
-        print(search_type)
-
-        print("\nperiod_choice = ")
-        print(period_choice)
+        print("\n\n\n")
+        print("query = " + query)                           # Usando concatenação de strings
+        print(f"search_type = {search_type}")               # Usando f-string (recomendado)
+        print("period_choice = {}".format(period_choice))   # Usando str.format()
 
         results = search_content(query, search_type, period_choice)
 
-        print("\n\nresults = ")
-        print(results)
-
         st.markdown("\n------------------------\n\n")
-
-        if results:
-            for article in results:
-                for key, value in article.items():
-                    st.write(f"{key.capitalize()}: {value}")
-                st.markdown("\n------------------------\n")
 
 if __name__ == "__main__":
     main()
 
-
-#   "searchParameters": {
-#     "q": "apple inc",
-#     "type": "places",
-#     "tbs": "qdr:h",
-#     "engine": "google"
-#   },
-#   "places": [
-#     {
-#       "position": 1,
-#       "title": "Apple Avalon",
-#       "address": "8130 Avalon Blvd, Alpharetta, GA 30009",
-#       "latitude": 34.07052,
-#       "longitude": -84.27462,
-#       "rating": 3.8,
-#       "ratingCount": 1400,
-#       "category": "Electronics store",
-#       "phoneNumber": "(770) 510-1670",
-#       "website": "https://www.apple.com/retail/avalon?cid=aos-us-seo-maps",
-#       "cid": "136156372451037095"
-#     },
