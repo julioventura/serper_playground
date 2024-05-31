@@ -7,7 +7,7 @@ import streamlit as st
 
 
 # Definir a variável path_result no início do script (apenas o caminho)
-path_results = "./results/"
+path_results = "./"
 
 # Crie sua API na SERPER gratuita e rapidamente: https://serper.dev/api-key
 SERPER_API_KEY = "cole sua chave aqui"
@@ -36,7 +36,7 @@ if not SERPER_API_KEY or SERPER_API_KEY == "cole sua chave aqui":
     
     # Verificação final de se a chave da API foi definida.
     if not SERPER_API_KEY or SERPER_API_KEY == "cole sua chave aqui":
-        st.error("\nERRO: \nVocê precisa fornecer uma chave de API do Serper. \nCrie uma gratuitamente em https://serper.dev/api-key\n\n")
+        st.error("\nERRO: \nVocê precisa de uma chave de API do Serper. \nCrie uma gratuitamente em https://serper.dev/api-key\n\n")
         st.stop()  # Encerra o programa se não houver chave.
 
 
@@ -97,7 +97,7 @@ def search_content(query, search_type="search", period_choice="y"):
         
         # Salvando os resultados em um arquivo JSON para análise em path_results
         # Nome do arquivo
-        file_name = "search_results.json"
+        file_name = "RESULTADOS.json"
         full_path = path_results + file_name
 
         with open(full_path, "w", encoding="utf-8") as f:
@@ -110,112 +110,6 @@ def search_content(query, search_type="search", period_choice="y"):
         st.write("\nsearch_results")
         st.write(search_results)
 
-        articles = []
-        for i, result in enumerate(search_results.get(search_type + "_results", [])):
-            st.markdown(f"\n--- Resultado da Busca ({search_type}) - {i+1} ---")
-
-            if search_type == "search":
-                title = result.get('title')
-                url = result.get('link')
-                snippet = result.get('snippet')
-                thumbnail = result.get('thumbnail')
-                richSnippet = result.get('rich_snippet', {})
-                position = result.get('position')
-                source = result.get('source')
-
-                st.write(f"Título: {title}")
-                st.write(f"URL: {url}")
-                st.write(f"Snippet: {snippet}")
-                if thumbnail:
-                    st.write(f"Thumbnail: {thumbnail}")
-                if richSnippet:
-                    st.write(f"Rich Snippet:")
-                    for key, value in richSnippet.items():
-                        st.write(f"  {key}: {json.dumps(value, indent=2)}")
-                st.write(f"Posição: {position}")
-                st.write(f"Fonte: {source}")
-
-            elif search_type == "images":
-                title = result.get('title')
-                url = result.get('link')
-                thumbnail = result.get('thumbnail')
-                source = result.get('source')
-
-                st.write(f"Título: {title}")
-                st.write(f"URL: {url}")
-                st.write(f"Thumbnail: {thumbnail}")
-                st.write(f"Fonte: {source}")
-
-            elif search_type == "videos":
-                title = result.get('title')
-                url = result.get('link')
-                thumbnail = result.get('thumbnail')
-                channel = result.get('channel')
-                duration = result.get('duration')
-                views = result.get('views')
-
-                st.write(f"Título: {title}")
-                st.write(f"URL: {url}")
-                st.write(f"Thumbnail: {thumbnail}")
-                st.write(f"Canal: {channel}")
-                st.write(f"Duração: {duration}")
-                st.write(f"Visualizações: {views}")
-
-            elif search_type == "news":
-                title = result.get('title')
-                url = result.get('link')
-                snippet = result.get('snippet')
-                publication = result.get('publication', {})
-                source = publication.get('name')
-                date = publication.get('date')
-
-                st.write(f"Título: {title}")
-                st.write(f"URL: {url}")
-                st.write(f"Snippet: {snippet}")
-                if source:
-                    st.write(f"Fonte: {source}")
-                if date:
-                    st.write(f"Data: {date}")
-
-            elif search_type == "shopping":
-                title = result.get('title')
-                url = result.get('link')
-                snippet = result.get('snippet')
-                price = result.get('price')
-                rating = result.get('rating')
-                reviews = result.get('reviews')
-                source = result.get('source')
-                thumbnail = result.get('thumbnail')
-
-                st.write(f"Título: {title}")
-                st.write(f"URL: {url}")
-                st.write(f"Snippet: {snippet}")
-                if price:
-                    st.write(f"Preço: {price}")
-                if rating:
-                    st.write(f"Avaliação: {rating}")
-                if reviews:
-                    st.write(f"Avaliações: {reviews}")
-                st.write(f"Fonte: {source}")
-                if thumbnail:
-                    st.write(f"Thumbnail: {thumbnail}")
-
-            elif search_type == "scholar":
-                title = result.get('title')
-                url = result.get('link')
-                snippet = result.get('snippet')
-                publication_info = result.get('publication_info', {})
-                cited_by = result.get('cited_by', {})
-
-                st.write(f"Título: {title}")
-                st.write(f"URL: {url}")
-                st.write(f"Snippet: {snippet}")
-                if publication_info:
-                    st.write("Informações da Publicação:")
-                    for key, value in publication_info.items():
-                        st.write(f"  {key}: {value}")
-                if cited_by:
-                    st.write(f"Citado por: {cited_by}")
 
     except requests.exceptions.HTTPError as errh:
         st.error(f"Erro HTTP: {errh}")
