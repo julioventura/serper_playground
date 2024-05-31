@@ -36,7 +36,7 @@ if not SERPER_API_KEY or SERPER_API_KEY == "cole sua chave aqui":
     
     # Verificação final de se a chave da API foi definida.
     if not SERPER_API_KEY or SERPER_API_KEY == "cole sua chave aqui":
-        st.error("\nERRO: \nVocê precisa de uma chave de API do Serper. \nCrie uma gratuitamente em https://serper.dev/api-key\n\n")
+        st.error("\nVocê precisa de uma chave de API do Serper. \nCrie uma gratuitamente em https://serper.dev/api-key\n\n")
         st.stop()  # Encerra o programa se não houver chave.
 
 
