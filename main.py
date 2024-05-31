@@ -101,7 +101,7 @@ def search_content(query, search_type="search", period_choice="y"):
         full_path = path_results + file_name
 
         with open(full_path, "w", encoding="utf-8") as f:
-            json.dump(search_results, f, ensure_ascii=False, indent=4)
+            json.dump(full_path, f, ensure_ascii=False, indent=4)
             st.write(f"Resultados salvos em: {full_path}")
 
         # Verificando se a chave 'organic' existe nos resultados
