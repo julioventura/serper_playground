@@ -1,5 +1,5 @@
-# pip install requests
-# pip install streamlit
+pip install requests
+pip install streamlit
 
 import requests
 import json
